@@ -1,117 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="resultDetails"
+            type="com.example.rickandmorty.model.Results" />
+        <import type="com.example.rickandmorty.model.Results" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidLineStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.20" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.80" />
 
         <ImageView
             android:id="@+id/characterImage"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/charecter_instance"
-            app:layout_constraintStart_toStartOf="parent"
+            app:imageUrl="@{resultDetails.image}"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+            app:layout_constraintStart_toStartOf="@id/guidLineStart"
+            tools:src="@drawable/charecter_instance"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/characterInfoLayout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_12"
             android:padding="@dimen/spacing_12"
+            app:layout_constraintEnd_toEndOf="@id/characterImage"
+            app:layout_constraintStart_toStartOf="@id/characterImage"
             app:layout_constraintTop_toBottomOf="@id/characterImage">
 
             <TextView
                 android:id="@+id/name"
                 style="@style/characterInfo"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="David Letterman"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="@id/firstSeenLayout"
-                app:layout_constraintStart_toStartOf="@id/firstSeenLayout"
+                android:text="@{resultDetails.name}"
+                tools:text="David Letterman"
+                app:layout_constraintStart_toStartOf="@id/genderLayout"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/lastKnowLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_12"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/name">
-
-
-                <TextView
-                    android:id="@+id/lastKnowText"
-                    style="@style/characterInfo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:alpha="0.4"
-                    android:text="Last known location:"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
-                <TextView
-                    android:id="@+id/lastKnowLocation"
-                    style="@style/characterInfo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Monogatron Mothership"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lastKnowText" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/firstSeenLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_16"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/lastKnowLayout">
-
-
-                <TextView
-                    android:id="@+id/firstSeenText"
-                    style="@style/characterInfo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:alpha="0.4"
-                    android:text="Last known location:"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
-                <TextView
-                    android:id="@+id/firstSeenLocation"
-                    style="@style/characterInfo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Monogatron Mothership"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/firstSeenText" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/stateLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_12"
-                app:layout_constraintEnd_toEndOf="@id/firstSeenLayout"
-                app:layout_constraintStart_toStartOf="@id/firstSeenLayout"
-                app:layout_constraintTop_toBottomOf="@id/firstSeenLayout">
+                app:layout_constraintStart_toStartOf="@id/genderLayout"
+                app:layout_constraintTop_toBottomOf="@id/name">
 
                 <ImageView
                     android:id="@+id/stateImage"
                     android:layout_width="10dp"
                     android:layout_height="10dp"
                     android:layout_marginTop="2dp"
-                    android:background="@drawable/alive"
+                    android:src="@drawable/alive"
+                    app:status="@{resultDetails.status}"
                     app:layout_constraintBottom_toBottomOf="@id/stateText"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/stateText" />
@@ -122,7 +82,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_12"
-                    android:text="Alive"
+                    android:text="@{resultDetails.status}"
+                    tools:text="@string/alive"
                     app:layout_constraintStart_toEndOf="@id/stateImage"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -132,7 +93,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_6"
-                    android:text="-"
+                    android:text="@string/divider"
                     app:layout_constraintStart_toEndOf="@id/stateText"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -142,13 +103,78 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_6"
-                    android:text="Alien"
+                    android:text="@{resultDetails.species}"
+                    tools:text="Alien"
                     app:layout_constraintStart_toEndOf="@id/divider"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/lastKnowLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_12"
+                app:layout_constraintHorizontal_bias="0.25"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/stateLayout">
+
+
+                <TextView
+                    android:id="@+id/lastKnowText"
+                    style="@style/characterInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.4"
+                    android:text="@string/last_known_location"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/lastKnowLocation"
+                    style="@style/characterInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{resultDetails.location.locationName}"
+                    tools:text="Monogatron Mothership"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lastKnowText" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/genderLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_16"
+                app:layout_constraintStart_toStartOf="@id/lastKnowLayout"
+                app:layout_constraintTop_toBottomOf="@id/lastKnowLayout">
+
+
+                <TextView
+                    android:id="@+id/genderText"
+                    style="@style/characterInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.4"
+                    android:text="@string/gender"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/firstSeenLocation"
+                    style="@style/characterInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{resultDetails.gender}"
+                    tools:text="Male"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/genderText" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

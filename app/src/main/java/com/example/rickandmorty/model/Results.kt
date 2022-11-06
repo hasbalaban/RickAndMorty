@@ -1,5 +1,6 @@
 package com.example.rickandmorty.model
 
+import androidx.room.Embedded
 import com.google.gson.annotations.SerializedName
 
 
@@ -16,4 +17,4 @@ data class Results(
     @SerializedName("episode") var episode: ArrayList<String>,
     @SerializedName("url") var url: String,
     @SerializedName("created") var created: String,
-)
+) :java.io.Serializable
