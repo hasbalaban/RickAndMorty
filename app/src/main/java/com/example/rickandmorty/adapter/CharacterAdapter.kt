@@ -4,8 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rickandmorty.databinding.CharacterItemBinding
+import com.example.rickandmorty.model.ResultDetails
 
-class CharacterAdapter (private val items : Int = 4) :
+class CharacterAdapter (private val resultDetails : ResultDetails) :
     RecyclerView.Adapter<CharacterAdapter.ViewHolder>() {
     class ViewHolder(val binding : CharacterItemBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -16,8 +17,9 @@ class CharacterAdapter (private val items : Int = 4) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.resultDetails = resultDetails.results[position]
     }
 
-    override fun getItemCount() = 5
+    override fun getItemCount() = resultDetails.results.size
 }
 

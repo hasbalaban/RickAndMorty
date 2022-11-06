@@ -5,18 +5,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
-import com.example.rickandmorty.R
 import com.example.rickandmorty.adapter.CharacterAdapter
+import com.example.rickandmorty.adapter.PagingAdapter
 import com.example.rickandmorty.databinding.FragmentMainHomeBinding
+import com.example.rickandmorty.model.ResultDetails
+import com.example.rickandmorty.viewmodel.MainHomeViewModel
 
-class MainHome : Fragment() {
+class MainHome : Fragment(), PagingAdapter.ClickPageButton {
 
     private var _binding : FragmentMainHomeBinding? = null
     private val binding : FragmentMainHomeBinding get() = _binding!!
+    private val viewModel by viewModels<MainHomeViewModel>()
+    private val adapterPaging =  PagingAdapter(0, this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,18 +48,19 @@ class MainHome : Fragment() {
     }
 
     private fun getData(){
-
+        viewModel.getCharacterData()
     }
 
-    private fun setAdapter(data: String) {
+    private fun setAdapter(resultDetails: ResultDetails) {
 
-        val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(binding.characterRecyclerview)
+        val adapterCharacter = CharacterAdapter(resultDetails)
+        binding.characterRecyclerview.adapter = adapterCharacter
 
-        val adapter = CharacterAdapter()
-        val layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        binding.characterRecyclerview.layoutManager = layoutManager
-        binding.characterRecyclerview.adapter = adapter
+        resultDetails.info.pages.let {
+            if (adapterPaging.pageSize != it){
+                adapterPaging.updatePageSize(it)
+            }
+        }
     }
 
     private fun setListeners(){
@@ -65,15 +68,27 @@ class MainHome : Fragment() {
     }
 
     private fun setDefaultConfig(){
-
+        val snapHelper = PagerSnapHelper()
+        snapHelper.attachToRecyclerView(binding.characterRecyclerview)
+        snapHelper.attachToRecyclerView(binding.pagingRecyclerview)
+        binding.pagingRecyclerview.adapter = adapterPaging
     }
 
     private fun subscribeObservers(){
-        setAdapter("data")
+        viewModel.charactersResponse.observe(viewLifecycleOwner){
+            it?.let {
+                setAdapter(it)
+            }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun clickPageButton(clickedPage: Int) {
+        if (clickedPage == viewModel.currentPage.value) return
+        viewModel.getCharacterData(clickedPage)
     }
 }
