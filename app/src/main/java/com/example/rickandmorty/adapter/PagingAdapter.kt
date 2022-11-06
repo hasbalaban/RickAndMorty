@@ -11,6 +11,7 @@ class PagingAdapter(
     private val clickPageButton : ClickPageButton
 ) : RecyclerView.Adapter<PagingAdapter.ViewHolder>() {
     private var adapterPageSize = pageSize
+    private var selectedPage = 1
     class ViewHolder(val binding: PagingItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,6 +23,7 @@ class PagingAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.apply {
             pageNumber.text = "${position + 1}"
+            this.pageSelected = selectedPage == position+1
             pageNumber.setOnClickListener {
                 clickPageButton.clickPageButton(position+1)
             }
@@ -33,15 +35,11 @@ class PagingAdapter(
         private val olsSize: Int,
         private val newSize: Int
     ) : DiffUtil.Callback() {
-
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return oldItemPosition == newItemPosition
         }
-
         override fun getOldListSize() = olsSize
-
         override fun getNewListSize() = newSize
-
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return oldItemPosition == newItemPosition
         }
@@ -53,7 +51,11 @@ class PagingAdapter(
         adapterPageSize = newSize
         notifyDataSetChanged()
         diffResult.dispatchUpdatesTo(this)
+    }
 
+    fun updatedSelectedPage(selectedPage: Int){
+        this.selectedPage = selectedPage
+        notifyDataSetChanged()
     }
 
     override fun getItemCount() = adapterPageSize

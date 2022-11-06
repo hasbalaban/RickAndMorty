@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:text="@{resultDetails.name}"
                 tools:text="David Letterman"
-                app:layout_constraintStart_toStartOf="@id/firstSeenLayout"
+                app:layout_constraintStart_toStartOf="@id/genderLayout"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -62,7 +62,7 @@
                 android:id="@+id/stateLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/firstSeenLayout"
+                app:layout_constraintStart_toStartOf="@id/genderLayout"
                 app:layout_constraintTop_toBottomOf="@id/name">
 
                 <ImageView
@@ -93,7 +93,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_6"
-                    android:text="-"
+                    android:text="@string/divider"
                     app:layout_constraintStart_toEndOf="@id/stateText"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -127,7 +127,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:alpha="0.4"
-                    android:text="Last known location:"
+                    android:text="@string/last_known_location"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -146,7 +146,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/firstSeenLayout"
+                android:id="@+id/genderLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_16"
@@ -155,12 +155,12 @@
 
 
                 <TextView
-                    android:id="@+id/firstSeenText"
+                    android:id="@+id/genderText"
                     style="@style/characterInfo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:alpha="0.4"
-                    android:text="First seen in:"
+                    android:text="@string/gender"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -170,10 +170,10 @@
                     style="@style/characterInfo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{resultDetails.name}"
-                    tools:text="Monogatron Mothership"
+                    android:text="@{resultDetails.gender}"
+                    tools:text="Male"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/firstSeenText" />
+                    app:layout_constraintTop_toBottomOf="@id/genderText" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

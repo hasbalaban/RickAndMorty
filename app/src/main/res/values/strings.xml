@@ -4,4 +4,7 @@
 
     <string name="dead">Dead</string>
     <string name="alive">Alive</string>
+    <string name="gender">Gender:</string>
+    <string name="last_known_location">Last known location:</string>
+    <string name="divider">-</string>
 </resources>
