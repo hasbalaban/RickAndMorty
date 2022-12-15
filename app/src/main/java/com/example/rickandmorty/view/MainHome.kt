@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.example.rickandmorty.adapter.CharacterAdapter
 import com.example.rickandmorty.adapter.PagingAdapter
 import com.example.rickandmorty.databinding.FragmentMainHomeBinding
-import com.example.rickandmorty.model.ResultDetails
+import com.example.rickandmorty.model.saveData
 import com.example.rickandmorty.viewmodel.MainHomeViewModel
 
 class MainHome : Fragment(), PagingAdapter.ClickPageButton {
@@ -18,10 +18,11 @@ class MainHome : Fragment(), PagingAdapter.ClickPageButton {
     private var _binding : FragmentMainHomeBinding? = null
     private val binding : FragmentMainHomeBinding get() = _binding!!
     private val viewModel by viewModels<MainHomeViewModel>()
-    private val adapterPaging =  PagingAdapter(0, this)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val adapterPaging : PagingAdapter by lazy {
+        PagingAdapter(0, this)
+    }
+    private val adapterCharacter : CharacterAdapter  by lazy{
+        CharacterAdapter()
     }
 
     override fun onCreateView(
@@ -38,41 +39,41 @@ class MainHome : Fragment(), PagingAdapter.ClickPageButton {
         setup()
     }
 
-
     private fun setup() {
         setDefaultConfig()
         subscribeObservers()
         getData()
     }
 
-    private fun getData(){
-        viewModel.getCharacterData()
+    private fun setDefaultConfig() {
+        val snapHelper1 = PagerSnapHelper()
+        val snapHelper2 = PagerSnapHelper()
+        binding.apply {
+            snapHelper1.attachToRecyclerView(characterRecyclerview)
+            snapHelper2.attachToRecyclerView(pagingRecyclerview)
+            characterRecyclerview.adapter = adapterCharacter
+            pagingRecyclerview.adapter = adapterPaging
+        }
     }
 
-    private fun setAdapter(resultDetails: ResultDetails) {
-        val adapterCharacter = CharacterAdapter(resultDetails)
-        binding.characterRecyclerview.adapter = adapterCharacter
+    private fun getData(){
+        viewModel.getCharacterData(context = requireContext())
+    }
 
-        resultDetails.info.pages.let {
+    private fun setAdapter(resultDetails: List<saveData>) {
+        adapterCharacter.updateCharacterList(resultDetails)
+        viewModel.pagingInfo.value?.pageSize?.let {
             if (adapterPaging.pageSize != it){
                 adapterPaging.updatePageSize(it)
             }
         }
     }
 
-    private fun setDefaultConfig() {
-        val snapHelper1 = PagerSnapHelper()
-        val snapHelper2 = PagerSnapHelper()
-        snapHelper1.attachToRecyclerView(binding.characterRecyclerview)
-        snapHelper2.attachToRecyclerView(binding.pagingRecyclerview)
-        binding.pagingRecyclerview.adapter = adapterPaging
-    }
-
     private fun subscribeObservers(){
         viewModel.charactersResponse.observe(viewLifecycleOwner){
             it?.let {
                 setAdapter(it)
-                viewModel.updateDatabase(requireContext(), it)
+                binding.pagingRecyclerview.scrollToPosition(viewModel.pagingInfo.value?.currentPage ?: 0)
             }
         }
 
@@ -98,8 +99,8 @@ class MainHome : Fragment(), PagingAdapter.ClickPageButton {
     }
 
     override fun clickPageButton(clickedPage: Int) {
-        if (clickedPage == viewModel.currentPage.value) return
-        viewModel.getCharacterData(clickedPage)
+        if (clickedPage == viewModel.pagingInfo.value?.currentPage) return
+        viewModel.getCharacterData(clickedPage, context = requireContext())
         adapterPaging.updatedSelectedPage(clickedPage)
     }
 }

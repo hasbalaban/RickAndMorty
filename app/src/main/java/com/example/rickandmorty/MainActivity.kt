@@ -11,36 +11,5 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setup()
     }
-
-    private fun setup() {
-        setDefaultConfig()
-        setListeners()
-        subscribeObservers()
-        getData()
-    }
-
-
-    private fun getData(){
-
-    }
-
-    private fun setAdapter(data: String) {
-        println(data)
-    }
-
-    private fun setListeners(){
-
-    }
-
-    private fun setDefaultConfig(){
-
-    }
-
-    private fun subscribeObservers(){
-        setAdapter("data")
-        setAdapter("data new")
-    }
-
 }

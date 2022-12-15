@@ -22,7 +22,7 @@ abstract class Database : RoomDatabase(){
         private fun provideDatabase(context: Context): Database {
             return Room.databaseBuilder(
                 context.applicationContext,
-                Database::class.java, "character-database"
+                Database::class.java, "characters"
             ).fallbackToDestructiveMigration().build()
         }
 

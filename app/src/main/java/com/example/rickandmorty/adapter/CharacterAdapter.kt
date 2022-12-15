@@ -4,10 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rickandmorty.databinding.CharacterItemBinding
-import com.example.rickandmorty.model.ResultDetails
+import com.example.rickandmorty.model.saveData
 
-class CharacterAdapter (private val resultDetails : ResultDetails) :
+class CharacterAdapter :
     RecyclerView.Adapter<CharacterAdapter.ViewHolder>() {
+    private var characterList :ArrayList<saveData> = ArrayList()
     class ViewHolder(val binding : CharacterItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -17,9 +18,16 @@ class CharacterAdapter (private val resultDetails : ResultDetails) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.resultDetails = resultDetails.results[position]
+        holder.binding.resultDetails = characterList[position]
     }
 
-    override fun getItemCount() = resultDetails.results.size
+    fun updateCharacterList(newList : List<saveData>){
+        characterList.clear()
+        characterList.addAll(newList)
+        notifyDataSetChanged()
+    }
+
+
+    override fun getItemCount() = characterList.size
 }
 
