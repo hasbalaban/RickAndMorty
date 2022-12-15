@@ -9,9 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.example.rickandmorty.adapter.CharacterAdapter
 import com.example.rickandmorty.adapter.PagingAdapter
-import com.example.rickandmorty.database.Database
 import com.example.rickandmorty.databinding.FragmentMainHomeBinding
-import com.example.rickandmorty.model.ResultDetails
 import com.example.rickandmorty.model.saveData
 import com.example.rickandmorty.viewmodel.MainHomeViewModel
 
@@ -20,10 +18,11 @@ class MainHome : Fragment(), PagingAdapter.ClickPageButton {
     private var _binding : FragmentMainHomeBinding? = null
     private val binding : FragmentMainHomeBinding get() = _binding!!
     private val viewModel by viewModels<MainHomeViewModel>()
-    private val adapterPaging =  PagingAdapter(0, this)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val adapterPaging : PagingAdapter by lazy {
+        PagingAdapter(0, this)
+    }
+    private val adapterCharacter : CharacterAdapter  by lazy{
+        CharacterAdapter(emptyList())
     }
 
     override fun onCreateView(
@@ -40,7 +39,6 @@ class MainHome : Fragment(), PagingAdapter.ClickPageButton {
         setup()
     }
 
-
     private fun setup() {
         setDefaultConfig()
         subscribeObservers()
@@ -48,6 +46,7 @@ class MainHome : Fragment(), PagingAdapter.ClickPageButton {
     }
 
     private fun setDefaultConfig() {
+        binding.characterRecyclerview.adapter = adapterCharacter
         setPagerSnapHelpers()
         viewModel.getDataFromDatabase(requireContext())
     }
@@ -57,9 +56,7 @@ class MainHome : Fragment(), PagingAdapter.ClickPageButton {
     }
 
     private fun setAdapter(resultDetails: List<saveData>) {
-        val adapterCharacter = CharacterAdapter(resultDetails)
-        binding.characterRecyclerview.adapter = adapterCharacter
-
+        adapterCharacter.updateCharacterList(resultDetails)
         viewModel.pageSize.value?.let {
             if (adapterPaging.pageSize != it){
                 adapterPaging.updatePageSize(it)
