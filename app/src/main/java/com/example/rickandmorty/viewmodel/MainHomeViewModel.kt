@@ -3,7 +3,9 @@ package com.example.rickandmorty.viewmodel
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.rickandmorty.database.CharacterPageDao
 import com.example.rickandmorty.database.Database
+import com.example.rickandmorty.model.PagingInfo
 import com.example.rickandmorty.model.ResultDetails
 import com.example.rickandmorty.model.saveData
 import com.example.rickandmorty.service.ApiClient
@@ -18,23 +20,33 @@ import retrofit2.Response
 
 class MainHomeViewModel : ViewModel() {
     val charactersResponse = MutableLiveData<List<saveData>>()
-    val currentPage = MutableLiveData<Int>()
-    val pageSize = MutableLiveData<Int>()
+    val pagingInfo = MutableLiveData<PagingInfo>()
     val isLoading = MutableLiveData(true)
+
 
     fun getCharacterData(page: Int = 1, context: Context) {
         isLoading.value = true
-        currentPage.value = page
+        val dao = Database.getDatabase(context).dao()
+        getDataFromDatabase(dao)
+        pagingInfo.value = pagingInfo.value?.copy(currentPage = page)
+
         ApiClient.apiService.getCharacterData(page).enqueue(object : Callback<ResultDetails> {
             override fun onResponse(call: Call<ResultDetails>, response: Response<ResultDetails>) {
                 isLoading.value = false
                 response.body()?.results?.let { results ->
+                    pagingInfo.value = PagingInfo(
+                        currentPage = page,
+                        pageSize = results.size
+                    )
+                    val saveList = results.transformCharacterSaveList(
+                        currentPage = pagingInfo.value?.currentPage ?: 0
+                    )
+                    charactersResponse.value = saveList
+
                     CoroutineScope(Dispatchers.IO).launch {
-                        Database.getDatabase(context).dao().deleteAll()
+                        dao.deleteAll()
+                        updateDatabase(dao, saveList)
                     }
-                    pageSize.value = results.size
-                    charactersResponse.value =
-                        results.transformCharacterSaveList(currentPage = currentPage.value ?: 0)
                 }
             }
 
@@ -44,23 +56,18 @@ class MainHomeViewModel : ViewModel() {
         })
     }
 
-    fun updateDatabase(context: Context, resultDetails: List<saveData>) {
-        val database = Database.getDatabase(context).dao()
-        CoroutineScope(Dispatchers.IO).launch {
-            database.addPage(*resultDetails.toTypedArray())
-        }
+    private suspend fun updateDatabase(dao: CharacterPageDao, resultDetails: List<saveData>) {
+            dao.addPage(*resultDetails.toTypedArray())
     }
 
-    fun getDataFromDatabase(context: Context) {
+    private fun getDataFromDatabase(dao: CharacterPageDao) {
         CoroutineScope(Dispatchers.IO).launch {
-            val dao = Database.getDatabase(context).dao()
             val databaseData = dao.getPage()
             if (databaseData.isNotEmpty()) {
                 withContext(Dispatchers.Main) {
-                    pageSize.value = 10
-                    currentPage.value = databaseData.firstOrNull()?.pageNumber
-                    charactersResponse.value = databaseData
                     isLoading.value = false
+                    pagingInfo.value = PagingInfo(currentPage = 1, pageSize = 1)
+                    charactersResponse.value = databaseData
                 }
             }
         }

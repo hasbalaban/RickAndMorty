@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.rickandmorty.databinding.CharacterItemBinding
 import com.example.rickandmorty.model.saveData
 
-class CharacterAdapter (private val resultDetails : List<saveData>) :
+class CharacterAdapter :
     RecyclerView.Adapter<CharacterAdapter.ViewHolder>() {
     private var characterList :ArrayList<saveData> = ArrayList()
     class ViewHolder(val binding : CharacterItemBinding) : RecyclerView.ViewHolder(binding.root)

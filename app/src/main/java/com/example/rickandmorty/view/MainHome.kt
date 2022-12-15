@@ -22,7 +22,7 @@ class MainHome : Fragment(), PagingAdapter.ClickPageButton {
         PagingAdapter(0, this)
     }
     private val adapterCharacter : CharacterAdapter  by lazy{
-        CharacterAdapter(emptyList())
+        CharacterAdapter()
     }
 
     override fun onCreateView(
@@ -46,9 +46,14 @@ class MainHome : Fragment(), PagingAdapter.ClickPageButton {
     }
 
     private fun setDefaultConfig() {
-        binding.characterRecyclerview.adapter = adapterCharacter
-        setPagerSnapHelpers()
-        viewModel.getDataFromDatabase(requireContext())
+        val snapHelper1 = PagerSnapHelper()
+        val snapHelper2 = PagerSnapHelper()
+        binding.apply {
+            snapHelper1.attachToRecyclerView(characterRecyclerview)
+            snapHelper2.attachToRecyclerView(pagingRecyclerview)
+            characterRecyclerview.adapter = adapterCharacter
+            pagingRecyclerview.adapter = adapterPaging
+        }
     }
 
     private fun getData(){
@@ -57,27 +62,18 @@ class MainHome : Fragment(), PagingAdapter.ClickPageButton {
 
     private fun setAdapter(resultDetails: List<saveData>) {
         adapterCharacter.updateCharacterList(resultDetails)
-        viewModel.pageSize.value?.let {
+        viewModel.pagingInfo.value?.pageSize?.let {
             if (adapterPaging.pageSize != it){
                 adapterPaging.updatePageSize(it)
             }
         }
     }
 
-
-    private fun setPagerSnapHelpers(){
-        val snapHelper1 = PagerSnapHelper()
-        val snapHelper2 = PagerSnapHelper()
-        snapHelper1.attachToRecyclerView(binding.characterRecyclerview)
-        snapHelper2.attachToRecyclerView(binding.pagingRecyclerview)
-        binding.pagingRecyclerview.adapter = adapterPaging
-    }
-
     private fun subscribeObservers(){
         viewModel.charactersResponse.observe(viewLifecycleOwner){
             it?.let {
                 setAdapter(it)
-                viewModel.updateDatabase(requireContext(), it)
+                binding.pagingRecyclerview.scrollToPosition(viewModel.pagingInfo.value?.currentPage ?: 0)
             }
         }
 
@@ -103,7 +99,7 @@ class MainHome : Fragment(), PagingAdapter.ClickPageButton {
     }
 
     override fun clickPageButton(clickedPage: Int) {
-        if (clickedPage == viewModel.currentPage.value) return
+        if (clickedPage == viewModel.pagingInfo.value?.currentPage) return
         viewModel.getCharacterData(clickedPage, context = requireContext())
         adapterPaging.updatedSelectedPage(clickedPage)
     }
