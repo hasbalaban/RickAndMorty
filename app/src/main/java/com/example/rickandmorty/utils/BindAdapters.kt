@@ -18,10 +18,12 @@ fun imageUrl(imageView: ImageView, imageUrl : String) {
 
 @BindingAdapter("status")
 fun status(imageView: ImageView, status : String) {
-    imageView.setImageResource(when(status){
+    imageView.setImageResource(
+        when(status) {
         imageView.resources.getString(R.string.dead) -> R.drawable.dead
         imageView.resources.getString(R.string.alive) -> R.drawable.alive
         else -> R.drawable.unknown
-    })
+    }
+    )
 
 }

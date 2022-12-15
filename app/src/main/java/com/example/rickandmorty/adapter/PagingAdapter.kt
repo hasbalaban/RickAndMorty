@@ -22,10 +22,11 @@ class PagingAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.apply {
-            pageNumber.text = "${position + 1}"
-            this.pageSelected = selectedPage == position+1
+            val currentPosition = position + 1
+            pageNumber.text = currentPosition.toString()
+            this.pageSelected = selectedPage == currentPosition
             pageNumber.setOnClickListener {
-                clickPageButton.clickPageButton(position+1)
+                clickPageButton.clickPageButton(currentPosition)
             }
         }
     }

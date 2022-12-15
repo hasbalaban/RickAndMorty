@@ -6,12 +6,12 @@ import com.example.rickandmorty.model.ResultDetailsDatabase
 @Dao
 interface CharacterPageDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addPage(vararg resultDetailsDatabase: ResultDetailsDatabase)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addPage(vararg resultDetailsDatabase: ResultDetailsDatabase) : List<Long>
 
     @Query("DELETE FROM ResultDetailsDatabase")
     suspend fun deleteAll()
 
     @Query("select * from ResultDetailsDatabase")
-    suspend fun getPage () : ResultDetailsDatabase
+    suspend fun getPage () : List<ResultDetailsDatabase>
 }
