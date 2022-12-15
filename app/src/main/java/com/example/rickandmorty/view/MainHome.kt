@@ -9,8 +9,10 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.example.rickandmorty.adapter.CharacterAdapter
 import com.example.rickandmorty.adapter.PagingAdapter
+import com.example.rickandmorty.database.Database
 import com.example.rickandmorty.databinding.FragmentMainHomeBinding
 import com.example.rickandmorty.model.ResultDetails
+import com.example.rickandmorty.model.saveData
 import com.example.rickandmorty.viewmodel.MainHomeViewModel
 
 class MainHome : Fragment(), PagingAdapter.ClickPageButton {
@@ -45,22 +47,28 @@ class MainHome : Fragment(), PagingAdapter.ClickPageButton {
         getData()
     }
 
-    private fun getData(){
-        viewModel.getCharacterData()
+    private fun setDefaultConfig() {
+        setPagerSnapHelpers()
+        viewModel.getDataFromDatabase(requireContext())
     }
 
-    private fun setAdapter(resultDetails: ResultDetails) {
+    private fun getData(){
+        viewModel.getCharacterData(context = requireContext())
+    }
+
+    private fun setAdapter(resultDetails: List<saveData>) {
         val adapterCharacter = CharacterAdapter(resultDetails)
         binding.characterRecyclerview.adapter = adapterCharacter
 
-        resultDetails.info.pages.let {
+        viewModel.pageSize.value?.let {
             if (adapterPaging.pageSize != it){
                 adapterPaging.updatePageSize(it)
             }
         }
     }
 
-    private fun setDefaultConfig() {
+
+    private fun setPagerSnapHelpers(){
         val snapHelper1 = PagerSnapHelper()
         val snapHelper2 = PagerSnapHelper()
         snapHelper1.attachToRecyclerView(binding.characterRecyclerview)
@@ -99,7 +107,7 @@ class MainHome : Fragment(), PagingAdapter.ClickPageButton {
 
     override fun clickPageButton(clickedPage: Int) {
         if (clickedPage == viewModel.currentPage.value) return
-        viewModel.getCharacterData(clickedPage)
+        viewModel.getCharacterData(clickedPage, context = requireContext())
         adapterPaging.updatedSelectedPage(clickedPage)
     }
 }

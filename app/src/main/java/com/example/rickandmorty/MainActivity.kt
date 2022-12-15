@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setAdapter(data: String) {
-        println(data)
+      //  println(data)
     }
 
     private fun setListeners(){
